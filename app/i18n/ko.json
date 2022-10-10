@@ -1,0 +1,25 @@
+{
+  "common": {
+    "ok": "OK 🇯🇵",
+    "cancel": "Cancel 🇯🇵",
+    "back": "Back 🇯🇵"
+  },
+  "home": {
+    "header": "홈페이지"
+  },
+  "store": {
+    "header": "STORE"
+  },
+  "map": {
+    "header": "지도"
+  },
+  "profile": {
+    "header": "PROFILE"
+  },
+  "notification": {
+    "header": "NOTIFICATION"
+  },
+  "storeDetail": {
+    "header": "STORE DETAIL"
+  }
+}

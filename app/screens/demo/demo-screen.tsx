@@ -27,6 +27,7 @@ const DEMO: ViewStyle = {
   paddingVertical: spacing[4],
   paddingHorizontal: spacing[4],
   backgroundColor: color.palette.deepPurple,
+  marginTop: spacing[4],
 }
 const BOLD: TextStyle = { fontWeight: "bold" }
 const DEMO_TEXT: TextStyle = {
@@ -149,7 +150,7 @@ export const DemoScreen: FC<StackScreenProps<NavigatorParamList, "demo">> = obse
           />
           <Text style={TITLE} preset="header" tx="demoScreen.title" />
           <Text style={TAGLINE} tx="demoScreen.tagLine" />
-          <BulletItem text="Integrated here, Navigation with State, TypeScript, Storybook, and i18n." />
+          <BulletItem text="Integrated here, Navigation with State, TypeScript, Storybook, and i20n." />
           <BulletItem
             text={`To run Storybook, press ${platformCommand} or shake the device to show the developer menu, then select "Toggle Storybook"`}
           />
@@ -168,6 +169,12 @@ export const DemoScreen: FC<StackScreenProps<NavigatorParamList, "demo">> = obse
             textStyle={DEMO_TEXT}
             tx="demoScreen.demoList"
             onPress={() => navigation.navigate("demoList")}
+          />
+          <Button
+            style={DEMO}
+            textStyle={DEMO_TEXT}
+            tx="demoScreen.demoList"
+            onPress={() => navigation.navigate("home")}
           />
           <Image source={logoIgnite} style={IGNITE} />
           <View style={LOVE_WRAPPER}>

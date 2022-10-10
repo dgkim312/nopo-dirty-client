@@ -36,5 +36,23 @@
   "storybook": {
     "placeholder": "Placeholder",
     "field": "Field"
+  },
+  "home": {
+    "header": "HOME"
+  },
+  "store": {
+    "header": "STORE"
+  },
+  "map": {
+    "header": "MAP"
+  },
+  "profile": {
+    "header": "PROFILE"
+  },
+  "notification": {
+    "header": "NOTIFICATION"
+  },
+  "storeDetail": {
+    "header": "STORE DETAIL"
   }
 }

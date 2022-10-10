@@ -91,10 +91,31 @@ export class Api {
     // transform the data into the format we are expecting
     try {
       const resultUser: Types.User = {
-        id: response.data.id,
         name: response.data.name,
+        gender: response.data.gender,
       }
       return { kind: "ok", user: resultUser }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getLanding(): Promise<Types.GetLandingResult> {
+    // make the api call
+    const response: ApiResponse<any> = await this.apisauce.get(`/landing`)
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    // transform the data into the format we are expecting
+    try {
+      const resultLanding: Types.Landing = {
+        image: response.data.image,
+      }
+      return { kind: "ok", landing: resultLanding }
     } catch {
       return { kind: "bad-data" }
     }
