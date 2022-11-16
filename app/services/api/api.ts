@@ -91,8 +91,10 @@ export class Api {
     // transform the data into the format we are expecting
     try {
       const resultUser: Types.User = {
-        name: response.data.name,
-        gender: response.data.gender,
+        name: response.data.data.name,
+        gender: response.data.data.gender,
+        age: response.data.data.age,
+        email: response.data.data.email,
       }
       return { kind: "ok", user: resultUser }
     } catch {

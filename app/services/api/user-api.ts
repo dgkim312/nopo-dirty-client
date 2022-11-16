@@ -21,7 +21,7 @@ export class UserApi {
         if (problem) return problem
       }
 
-      const user = response.data.user
+      const user = response.data.data
 
       return { kind: "ok", user }
     } catch (e) {

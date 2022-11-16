@@ -1,11 +1,11 @@
 import { flow, Instance, SnapshotIn, SnapshotOut, toGenerator, types } from "mobx-state-tree"
 import { Api } from "../../services/api"
-import { UserApi } from "../../services/api/user-api"
 import { withEnvironment } from "../extensions/with-environment"
 
 export const UserEntity = types.model("UserEntity").props({
   name: types.maybe(types.string),
   gender: types.maybe(types.string),
+  age: types.maybe(types.string),
 })
 
 /**
@@ -29,45 +29,29 @@ export const UserModel = types
     },
   }))
   .actions((self) => ({
-    getUser: async (id: string) => {
-      const userApi = new UserApi(self.environment.api)
-      const result = await userApi.getUser(id)
+    getUser: flow(function* (id: string) {
+      self.saveUser({
+        user: { name: "", gender: "", age: "" },
+        isLoading: true,
+      })
 
-      console.log(result)
+      const result = yield* toGenerator(userApiRequest(id))
 
       if (result.kind === "ok") {
         self.saveUser({
+          user: { name: result.user.name, gender: result.user.gender, age: result.user.age },
           isLoading: false,
-          user: { name: result.user.name, gender: result.user.gender },
         })
       } else {
         __DEV__ && console.tron.log(result.kind)
       }
-    },
-
-    // getUser: flow(function* () {
-    //   self.saveUser({
-    //     user: { name: "", gender: "" },
-    //     isLoading: true,
-    //   })
-
-    //   const result = yield* toGenerator(userApiRequest())
-
-    //   if (result.kind === "ok") {
-    //     self.saveUser({
-    //       user: { name: result.user.name, gender: result.user.gender },
-    //       isLoading: false,
-    //     })
-    //   } else {
-    //     __DEV__ && console.tron.log(result.kind)
-    //   }
-    // }),
+    }),
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
-const userApiRequest = async () => {
+const userApiRequest = async (id: string) => {
   const userApi = new Api()
   userApi.setup()
-  return await userApi.getUser("1")
+  return await userApi.getUser(id)
 }
 
 export interface User extends Instance<typeof UserModel> {}

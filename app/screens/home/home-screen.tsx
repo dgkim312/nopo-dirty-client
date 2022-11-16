@@ -239,7 +239,7 @@ export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = 
     useEffect(() => {
       async function fetchData() {
         // Promise.all([userStore.getUser(), landingStore.getLanding()])
-        await userStore.getUser("1")
+        await userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464")
       }
       fetchData()
       console.log("User :::", user, isLoading)

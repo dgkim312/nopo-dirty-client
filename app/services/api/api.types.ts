@@ -3,7 +3,9 @@ import { Character } from "../../models/character/character"
 
 export interface User {
   name: string
+  age: string
   gender: string
+  email: string
 }
 
 export interface Landing {
