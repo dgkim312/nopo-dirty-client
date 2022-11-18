@@ -1,5 +1,6 @@
 import { GeneralApiProblem } from "./api-problem"
 import { Character } from "../../models/character/character"
+import { Top } from "../../models/top/top"
 
 export interface User {
   name: string
@@ -11,6 +12,9 @@ export interface User {
 export interface Landing {
   image: string
 }
+
+export type GetTopStoresResult = { kind: "ok"; topStores: Top[] } | GeneralApiProblem
+export type GetTopStoreResult = { kind: "ok"; topStores: Top } | GeneralApiProblem
 
 export type GetUsersResult = { kind: "ok"; users: User[] } | GeneralApiProblem
 export type GetUserResult = { kind: "ok"; user: User } | GeneralApiProblem

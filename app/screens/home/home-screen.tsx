@@ -162,6 +162,17 @@ const RECOMMENDSTORECARD: ViewStyle = {
   flexDirection: "column",
 }
 
+const RECOMMENDSTORELOADINGCARD: ViewStyle = {
+  backgroundColor: "#F5F5F5",
+  width: Dimensions.get("window").width - 30,
+  height: 145,
+  borderRadius: 15,
+  marginTop: 15,
+  marginBottom: 5,
+  marginRight: 15,
+  flexDirection: "column",
+}
+
 const RECOMMENDSTORECARDIMAGE: ImageStyle = {
   // position: "absolute",
   width: 130,
@@ -169,6 +180,18 @@ const RECOMMENDSTORECARDIMAGE: ImageStyle = {
   borderRadius: 10,
   marginTop: 10,
   marginLeft: 10,
+  marginRight: 15,
+  marginBottom: 5,
+}
+
+const RECOMMENDSTORELOADINGCARDIMAGE: ImageStyle = {
+  // position: "absolute",
+  width: Dimensions.get("window").width - 50,
+  height: 100,
+  borderRadius: 10,
+  marginTop: 10,
+  marginLeft: 10,
+  marginRight: 15,
   marginBottom: 5,
 }
 
@@ -182,9 +205,10 @@ const RECOMMENDDISTANCE: TextStyle = {
   marginTop: 20,
   marginLeft: 20,
   color: "#CD212A",
-  backgroundColor: "white",
+  backgroundColor: "black",
   fontFamily: "NotoSansKR-Regular",
-  fontWeight: "700",
+  fontWeight: "900",
+  borderRadius: 4,
 }
 
 const PROMITIONIMAGE: ViewStyle = {
@@ -220,8 +244,26 @@ const RecommendedStore = (props) => {
   return (
     <View style={RECOMMENDSTORECARD}>
       <View>
-        <Image source={props.source} style={RECOMMENDSTORECARDIMAGE} />
-        <Text style={RECOMMENDDISTANCE}>1.5Km</Text>
+        <Image
+          // source={{ uri: "https://source.unsplash.com/random?restaurant" }}
+          source={chineseFood}
+          style={RECOMMENDSTORECARDIMAGE}
+        />
+        <Text style={RECOMMENDDISTANCE}>{props.rank}</Text>
+      </View>
+      <Text style={CATEGORYFOODTEXT}>{props.title}</Text>
+    </View>
+  )
+}
+
+const RecommendedLoadingStore = (props) => {
+  return (
+    <View style={RECOMMENDSTORELOADINGCARD}>
+      <View>
+        <Image
+          source={{ uri: "https://cdn.nopo.shop/loading.gif" }}
+          style={RECOMMENDSTORELOADINGCARDIMAGE}
+        />
       </View>
       <Text style={CATEGORYFOODTEXT}>{props.title}</Text>
     </View>
@@ -232,18 +274,23 @@ const RecommendedStore = (props) => {
 
 export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = observer(
   function HomeScreen({ navigation }) {
-    const { userStore, landingStore } = useStores()
+    const { userStore, landingStore, topStoreStore } = useStores()
     // const { characters } = characterStore
-    const { isLoading, user } = userStore
 
     useEffect(() => {
       async function fetchData() {
-        // Promise.all([userStore.getUser(), landingStore.getLanding()])
-        await userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464")
+        // Promise.all([
+        //   userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464"),
+        //   landingStore.getLanding(),
+        //   topStoreStore.getTopStore(),
+        // ])
+        // await userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464")
+        await topStoreStore.getTopStore()
       }
+      console.log("IS Loading :", topStoreStore.isLoading)
       fetchData()
-      console.log("User :::", user, isLoading)
-    }, [userStore, landingStore])
+      // }, [userStore, landingStore, topStoreStore])
+    }, [topStoreStore])
 
     return (
       // <View>
@@ -273,10 +320,6 @@ export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = 
           )}
 
           <View style={CATEGORY}>
-            {/* <Text>{userStore.isLoading.toString()}</Text>
-            <Text>{userStore.user.name}</Text>
-            <Text>{landingStore.isLoading.toString()}</Text>
-            <Text>{landingStore.landing.image}</Text> */}
             <Text style={CATEGORYTEXT}> 음식 종류별 식당 </Text>
             <ScrollView
               style={CATEGORYGROUP}
@@ -320,13 +363,24 @@ export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = 
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
-              {/* <View style={RECOMMENDSTORECARD}>
-              <Image source={recommendedFirst} style={RECOMMENDSTORECARDIMAGE} />
-              <Text style={CATEGORYFOODTEXT}>정정아식당</Text>
-            </View> */}
+              {topStoreStore.isLoading ? (
+                <RecommendedLoadingStore title="로딩 중...." source={recommendedSecond} />
+              ) : (
+                // eslint-disable-next-line react/jsx-key
+                topStoreStore.topStores.map((topStore) => (
+                  <RecommendedStore
+                    key={topStore.managementNo}
+                    title={topStore.storeName}
+                    source={recommendedFirst}
+                    rank={topStore.ranking}
+                  />
+                ))
+              )}
+
+              {/* 
               <RecommendedStore title="정정아식당" source={recommendedFirst} />
               <RecommendedStore title="가야보쌈" source={recommendedSecond} />
-              <RecommendedStore title="뜸들이다" source={recommendedThird} />
+              <RecommendedStore title="뜸들이다" source={recommendedThird} /> */}
             </ScrollView>
           </View>
 

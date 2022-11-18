@@ -74,6 +74,37 @@ export class Api {
     }
   }
 
+  async getTopStore(): Promise<Types.GetTopStoresResult> {
+    // make the api call
+    const response: ApiResponse<any> = await this.apisauce.get(`/stores/store/starred`)
+
+    // the typical ways to die when calling an api
+    if (!response.ok) {
+      const problem = getGeneralApiProblem(response)
+      if (problem) return problem
+    }
+
+    const convertTopStore = (raw) => {
+      return {
+        businessType: raw.businessType,
+        licenseIssueDate: raw.licenseIssueDate,
+        locationAddress: raw.locationAddress,
+        ranking: raw.ranking,
+        storeName: raw.storeName,
+        managementNo: raw.managementNo,
+      }
+    }
+
+    // transform the data into the format we are expecting
+    try {
+      const rawTopStores = response.data.data
+      const resultTopStores = rawTopStores.map(convertTopStore)
+      return { kind: "ok", topStores: resultTopStores }
+    } catch {
+      return { kind: "bad-data" }
+    }
+  }
+
   /**
    * Gets a single user by ID
    */
