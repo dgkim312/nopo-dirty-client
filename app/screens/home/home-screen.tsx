@@ -1,9 +1,10 @@
-import React, { FC, useEffect } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import { NavigatorParamList } from "../../navigators"
 import { Screen, AutoImage as Image, SearchBox } from "../../components"
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import Icon5 from "react-native-vector-icons/FontAwesome5"
+import DropDownPicker from "react-native-dropdown-picker"
 import {
   TextStyle,
   TouchableOpacity,
@@ -14,8 +15,6 @@ import {
   Dimensions,
 } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
-import I18n from "i18n-js"
-import { translate } from "../../i18n"
 import { useStores } from "../../models"
 export const porkBelly = require("./pork-belly-2.jpg")
 export const pizza = require("./pizza.jpg")
@@ -144,6 +143,7 @@ const RECOMMENDSUBTEXT: TextStyle = {
   fontSize: 13,
   fontWeight: "400",
   fontFamily: "NotoSansKR-Regular",
+  marginBottom: 10,
 }
 
 const RECOMMENDGROUP: ViewStyle = {
@@ -274,23 +274,36 @@ const RecommendedLoadingStore = (props) => {
 
 export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = observer(
   function HomeScreen({ navigation }) {
-    const { userStore, landingStore, topStoreStore } = useStores()
+    const { landingStore, topStoreStore } = useStores()
+
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState(null)
+    const [items, setItems] = useState([
+      { label: "서울특별시", value: "서울특별시" },
+      { label: "경기도", value: "경기도" },
+      { label: "충청남도", value: "충청남도" },
+      { label: "충청북도", value: "충청북도" },
+      { label: "전라남도", value: "전라남도" },
+      { label: "전라북도", value: "전라북도" },
+      { label: "강원도", value: "강원도" },
+      { label: "경상남도", value: "경상남도" },
+      { label: "경상북도", value: "경상북도" },
+      { label: "제주도", value: "제주도" },
+    ])
     // const { characters } = characterStore
 
     useEffect(() => {
       async function fetchData() {
-        // Promise.all([
-        //   userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464"),
-        //   landingStore.getLanding(),
-        //   topStoreStore.getTopStore(),
-        // ])
-        // await userStore.getUser("0015f27f-2904-4361-9ffa-6079cb85b464")
         await topStoreStore.getTopStore()
       }
       console.log("IS Loading :", topStoreStore.isLoading)
       fetchData()
       // }, [userStore, landingStore, topStoreStore])
     }, [topStoreStore])
+
+    const findStoresWithLocal = async ({ value }) => {
+      await topStoreStore.getTopStoreWithLocal(value)
+    }
 
     return (
       // <View>
@@ -358,6 +371,25 @@ export const HomeScreen: FC<BottomTabScreenProps<NavigatorParamList, "home">> = 
           <View style={CATEGORY}>
             <Text style={RECOMMENDTEXT}>근처의 추천식당</Text>
             <Text style={RECOMMENDSUBTEXT}>강력하게 추천하는 오래된 맛집</Text>
+            <DropDownPicker
+              max={2}
+              open={open}
+              value={value}
+              items={items}
+              setOpen={setOpen}
+              setValue={setValue}
+              setItems={setItems}
+              maxHeight={150}
+              autoScroll={true}
+              scrollViewProps={{
+                decelerationRate: "fast",
+              }}
+              listMode="SCROLLVIEW"
+              placeholder="알아보고 싶은 도시는?"
+              onSelectItem={(item) => {
+                findStoresWithLocal(item)
+              }}
+            />
             <ScrollView
               style={RECOMMENDGROUP}
               horizontal={true}

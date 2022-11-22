@@ -57,11 +57,37 @@ export const TopStoreModel = types
       }
     }),
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
+  .actions((self) => ({
+    getTopStoreWithLocal: flow(function* (value) {
+      self.saveTopStore({
+        topStores: [],
+        isLoading: true,
+      })
+
+      const result = yield* toGenerator(localStoreApiRequest(value))
+      console.log("Request Finish", result.kind)
+
+      if (result.kind === "ok") {
+        self.saveTopStore({
+          topStores: result.topStores,
+          isLoading: false,
+        })
+      } else {
+        __DEV__ && console.tron.log(result.kind)
+      }
+    }),
+  })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 const topStoreApiRequest = async () => {
   const topStoreApi = new Api()
   topStoreApi.setup()
   return await topStoreApi.getTopStore()
+}
+
+const localStoreApiRequest = async (local) => {
+  const topStoreApi = new Api()
+  topStoreApi.setup()
+  return await topStoreApi.getTopStoreWithLocal(local)
 }
 
 export interface TopStore extends Instance<typeof TopStoreModel> {}
